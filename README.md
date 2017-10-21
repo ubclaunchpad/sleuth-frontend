@@ -1,6 +1,6 @@
 # Sleuth Frontend :computer:
 
-A React frontend for our search Engine, Sleuth!
+A React frontend for our search Engine, [Sleuth](https://github.com/ubclaunchpad/sleuth)!
 
 ## Useful links
 
