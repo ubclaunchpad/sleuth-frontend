@@ -14,11 +14,22 @@ export default class SearchForm extends React.Component {
         this.handleError = this.handleError.bind(this);
     }
 
+    /**
+     * Called when the user inputs something into the search input field. Updates
+     * component state to reflect the content in the search field.
+     * @param {Event} event
+     */
     handleChange(event) {
         console.log('Keypress');
         this.setState({ query: event.target.value });
     }
 
+    /**
+     * Called when the user clicks the submit button. Makes a search call to the
+     * Sleuth API and updates the component state to reflect the results in the
+     * response.
+     * @param {Event} event
+     */
     handleSubmit(event) {
         console.log('Submitted');
         this.props.client.search(this.state.query, 'genericPage')
@@ -26,12 +37,20 @@ export default class SearchForm extends React.Component {
             .catch(this.handleError);
     }
 
+    /**
+     * Udpates the component state to reflect the results in the given response.
+     * @param {Object} response
+     */
     handleResponse(response) {
         console.log('Received API response:');
         console.log(JSON.stringify(response));
         // TODO: display results in response
     }
 
+    /**
+     * Updates the component state to reflect the error that occurred.
+     * @param {Exception} error
+     */
     handleError(error) {
         console.log('An error occurred making a search request: ' + error);
         // TODO: improve error handling
