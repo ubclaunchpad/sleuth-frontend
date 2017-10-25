@@ -8,9 +8,15 @@ export default class App extends React.Component {
 
 	render() {
 		return (
-			<div style={{ textAlign: 'center' }}>
+			<div className='container-fluid' style={styles.rootDiv}>
 				<SearchForm client={this.props.client} />
 			</div>
 		);
+	}
+}
+
+const styles = {
+	rootDiv: {
+		textAlign: 'center'
 	}
 }

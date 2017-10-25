@@ -58,22 +58,25 @@ export default class SearchForm extends React.Component {
 
     render() {
         return (
-            <div className='container-fluid'>
-                <form className='form-inline' onSubmit={this.handleSubmit}>
+            <div className='input-group' style={styles.searchContainer}>
+                <span className='input-group-btn'>
                     <input
+                        id='search-input'
                         type='text'
                         value={this.state.query}
                         onChange={this.handleChange}
                         className='form-control'
                         placeholder='Feeling.... curious?'
-                        style={styles.inputField}
                     />
-                    <input
-                        type='submit'
-                        value='Search'
+                    <button
                         className='btn btn-primary'
-                    />
-                </form>
+                        type='button'
+                        style={styles.searchButton}
+                        onClick={this.handleSubmit}
+                    >
+                        Search
+                    </button>
+                </span>
                 {/* Results should probably go in come component here */}
             </div>
         )
@@ -81,7 +84,12 @@ export default class SearchForm extends React.Component {
 }
 
 const styles = {
-    inputField: {
-        width: '50%'
+    searchContainer: {
+        display: 'inline-block',
+        minWidth: '200px',
+        width: '50%',
+    },
+    searchButton: {
+        borderRadius: '4px'
     }
 };

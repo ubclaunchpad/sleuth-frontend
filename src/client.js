@@ -39,7 +39,7 @@ export default class SleuthClient {
         try {
             const uri = this.url + endpoint + SleuthClient._stringParams(params);
             const response = await fetch(uri);
-            return await SleuthClient.json(response);
+            return await SleuthClient._json(response);
         } catch (ex) {
             throw ex;
         }
