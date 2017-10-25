@@ -66,7 +66,7 @@ export default class SearchForm extends React.Component {
                         value={this.state.query}
                         onChange={this.handleChange}
                         className='form-control'
-                        placeholder='Feeling.... curious?'
+                        placeholder='Feeling... curious?'
                     />
                     <button
                         className='btn btn-primary'
@@ -77,7 +77,7 @@ export default class SearchForm extends React.Component {
                         Search
                     </button>
                 </span>
-                {/* Results should probably go in come component here */}
+                {/* Results should probably go in some component here */}
             </div>
         )
     }
