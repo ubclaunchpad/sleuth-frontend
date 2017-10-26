@@ -1,14 +1,17 @@
 import React from 'react';
+import ResultList from './ResultList';
 
 export default class SearchForm extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             query: '',
-            results: []
+            results: [],
+            noResults: false
         };
 
         this.handleChange = this.handleChange.bind(this);
+        this.handleKeyPress = this.handleKeyPress.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleResponse = this.handleResponse.bind(this);
         this.handleError = this.handleError.bind(this);
@@ -20,8 +23,20 @@ export default class SearchForm extends React.Component {
      * @param {Event} event
      */
     handleChange(event) {
-        console.log('Keypress');
         this.setState({ query: event.target.value });
+        // TODO: add search suggestions here
+    }
+
+    /**
+     * Called when the user presses a key on in the search input field. If the
+     * user presses enter this will submit the search query.
+     * @param {Event} event
+     */
+    handleKeyPress(event) {
+        if (event.key === 'Enter') {
+            this.handleSubmit();
+            return;
+        }
     }
 
     /**
@@ -31,7 +46,8 @@ export default class SearchForm extends React.Component {
      * @param {Event} event
      */
     handleSubmit(event) {
-        console.log('Submitted');
+        if (this.state.query.length === 0) return;
+        this.setState({ noResults: false });
         this.props.client.search(this.state.query, 'genericPage')
             .then(this.handleResponse)
             .catch(this.handleError);
@@ -42,9 +58,17 @@ export default class SearchForm extends React.Component {
      * @param {Object} response
      */
     handleResponse(response) {
-        console.log('Received API response:');
-        console.log(JSON.stringify(response));
-        // TODO: display results in response
+        const docs = response.response.docs;
+        const highlights = response.highlighting;
+        let results = docs.map((doc, index) => {
+            return {
+                url: doc.id,
+                description: doc.description ? doc.description[0] : highlights[doc.id].content[0],
+                pageName: doc.pageName ? doc.pageName : doc.siteName
+            }
+        });
+
+        this.setState({ results: results, noResults: results.length === 0 });
     }
 
     /**
@@ -52,44 +76,48 @@ export default class SearchForm extends React.Component {
      * @param {Exception} error
      */
     handleError(error) {
-        console.log('An error occurred making a search request: ' + error);
+        console.log('An error occurred making/handling a search request: ' + error);
         // TODO: improve error handling
     }
 
     render() {
+        let message = this.state.noResults ? 'No results found :(' : null;
         return (
             <div className='input-group' style={styles.searchContainer}>
-                <span className='input-group-btn'>
+                <div className="input-group add-on">
                     <input
                         id='search-input'
+                        className='form-control'
                         type='text'
                         value={this.state.query}
                         onChange={this.handleChange}
-                        className='form-control'
+                        onKeyPress={this.handleKeyPress}
                         placeholder='Feeling... curious?'
                     />
-                    <button
-                        className='btn btn-primary'
-                        type='button'
-                        style={styles.searchButton}
-                        onClick={this.handleSubmit}
-                    >
-                        Search
-                    </button>
-                </span>
-                {/* Results should probably go in some component here */}
+                    <div className="input-group-btn">
+                        <button
+                            className='btn btn-primary'
+                            type='button'
+                            onClick={this.handleSubmit}
+                        >
+                            <i className="glyphicon glyphicon-search"></i>
+                        </button>
+                    </div>
+                </div>
+                <h3>{message}</h3>
+                <ResultList results={this.state.results} />
             </div>
         )
     }
 }
 
 const styles = {
-    searchContainer: {
-        display: 'inline-block',
+                    searchContainer: {
+                    display: 'inline-block',
         minWidth: '200px',
         width: '50%',
     },
     searchButton: {
-        borderRadius: '4px'
+                    borderRadius: '4px'
     }
 };
