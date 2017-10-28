@@ -1,5 +1,6 @@
 import React from 'react';
 import ResultList from './ResultList';
+import ResultGraph from './ResultGraph';
 
 export default class SearchForm extends React.Component {
     constructor(props) {
@@ -7,7 +8,8 @@ export default class SearchForm extends React.Component {
         this.state = {
             query: '',
             results: [],
-            noResults: false
+            noResults: false,
+            viewType: 'list'
         };
 
         this.handleChange = this.handleChange.bind(this);
@@ -15,6 +17,8 @@ export default class SearchForm extends React.Component {
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleResponse = this.handleResponse.bind(this);
         this.handleError = this.handleError.bind(this);
+        this.handleSwitchView = this.handleSwitchView.bind(this);
+        this.displayResults = this.displayResults.bind(this);
     }
 
     /**
@@ -80,11 +84,32 @@ export default class SearchForm extends React.Component {
         // TODO: improve error handling
     }
 
+    handleSwitchView(event) {
+        if (this.state.viewType == 'list')
+            this.setState({viewType:'graph'});
+        else
+            this.setState({viewType:'list'});
+    }
+
+    displayResults() {
+        if (this.state.viewType == 'list') 
+            return <ResultList results={this.state.results} />;
+        else 
+            return <ResultGraph results={this.state.results} />;
+    }
+
     render() {
         let message = this.state.noResults ? 'No results found :(' : null;
         return (
             <div className='input-group' style={styles.searchContainer}>
                 <div className="input-group add-on">
+                    <div className="view-switch-btn">
+                        <button
+                            className='btn btn-switch'
+                            type='button'
+                            onClick={this.handleSwitchView} >
+                        </button>
+                    </div>
                     <input
                         id='search-input'
                         className='form-control'
@@ -98,26 +123,25 @@ export default class SearchForm extends React.Component {
                         <button
                             className='btn btn-primary'
                             type='button'
-                            onClick={this.handleSubmit}
-                        >
+                            onClick={this.handleSubmit} >
                             <i className="glyphicon glyphicon-search"></i>
                         </button>
                     </div>
                 </div>
                 <h3>{message}</h3>
-                <ResultList results={this.state.results} />
+                { this.displayResults() }
             </div>
         )
     }
 }
 
 const styles = {
-                    searchContainer: {
-                    display: 'inline-block',
+    searchContainer: {
+        display: 'inline-block',
         minWidth: '200px',
         width: '50%',
     },
     searchButton: {
-                    borderRadius: '4px'
+        borderRadius: '4px'
     }
 };
