@@ -1,18 +1,40 @@
 import React from 'react';
 import SearchForm from './SearchForm';
-import Navbar from './Navbar';
 
 export default class App extends React.Component {
 	constructor(props) {
 		super(props);
+		this.state = {
+			graphView: true
+		}
+
+		this.toggleView = this.toggleView.bind(this);
+	}
+
+	toggleView() {
+		console.log("Toggled View");
+		this.setState({ graphView: !this.state.graphView });
 	}
 
 	render() {
 		return (
 			<div>
-				<Navbar {...navbar} />
-				<div className='container-fluid' style={styles.rootDiv}>
-					<SearchForm client={this.props.client} />
+				<nav className="navbar navbar-default">
+					<div className="container-fluid">
+						<div className="navbar-header">
+							<a className="navbar-brand">Sleuth</a>
+						</div>
+						<div className="collapse navbar-collapse" id="navbar-collapse">
+							<ul className="nav navbar-nav">
+								<li onClick={this.toggleView}>
+									<a>Toggle View</a>
+								</li>
+							</ul>
+						</div>
+					</div>
+				</nav>
+				<div className='container-fluid' style={styles.search}>
+					<SearchForm client={this.props.client} graphView={this.state.graphView} />
 				</div>
 			</div>
 		);
@@ -20,20 +42,7 @@ export default class App extends React.Component {
 }
 
 const styles = {
-	rootDiv: {
+	search: {
 		textAlign: 'center'
 	}
-}
-
-const navbar = {
-    brand: {
-        linkTo: "#",
-        text: "Sleuth"
-    },
-    links: [
-        {
-            linkTo: "#",
-            text: "Link 1"
-        }
-    ]
 };

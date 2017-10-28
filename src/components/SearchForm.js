@@ -1,6 +1,5 @@
 import React from 'react';
 import ResultList from './ResultList';
-import ResultGraph from './ResultGraph';
 
 export default class SearchForm extends React.Component {
     constructor(props) {
@@ -9,16 +8,14 @@ export default class SearchForm extends React.Component {
             query: '',
             results: [],
             noResults: false,
-            viewType: 'list'
+            errored: false,
         };
 
         this.handleChange = this.handleChange.bind(this);
         this.handleKeyPress = this.handleKeyPress.bind(this);
-        this.handleSubmit = this.handleSubmit.bind(this);
         this.handleResponse = this.handleResponse.bind(this);
-        this.handleError = this.handleError.bind(this);
-        this.handleSwitchView = this.handleSwitchView.bind(this);
-        this.displayResults = this.displayResults.bind(this);
+        this.getResults = this.getResults.bind(this);
+        this.getMessage = this.getMessage.bind(this);
     }
 
     /**
@@ -39,7 +36,6 @@ export default class SearchForm extends React.Component {
     handleKeyPress(event) {
         if (event.key === 'Enter') {
             this.handleSubmit();
-            return;
         }
     }
 
@@ -81,35 +77,34 @@ export default class SearchForm extends React.Component {
      */
     handleError(error) {
         console.log('An error occurred making/handling a search request: ' + error);
-        // TODO: improve error handling
+        this.setState({ errored: true });
     }
 
-    handleSwitchView(event) {
-        if (this.state.viewType == 'list')
-            this.setState({viewType:'graph'});
-        else
-            this.setState({viewType:'list'});
+    /**
+     * Returns a ResultList or a ResultGraph component containing search results
+     * depending on this.props.graphView.
+     */
+    getResults() {
+        // TODO: check this.props.graphView and use graphView if it's true
+        return <ResultList results={this.state.results} />;
     }
 
-    displayResults() {
-        if (this.state.viewType == 'list') 
-            return <ResultList results={this.state.results} />;
-        else 
-            return <ResultGraph results={this.state.results} />;
+    /**
+     * Returns a message to display if there are no search results, otherwise
+     * returns undefined.
+     */
+    getMessage() {
+        if (this.state.errored) {
+            return <h4>Yikes! An error occurred while performing your search</h4>;
+        } else if (this.state.noResults) {
+            return <h4>No results found :(</h4>;
+        }
     }
 
     render() {
-        let message = this.state.noResults ? 'No results found :(' : null;
         return (
             <div className='input-group' style={styles.searchContainer}>
-                <div className="input-group add-on">
-                    <div className="view-switch-btn">
-                        <button
-                            className='btn btn-switch'
-                            type='button'
-                            onClick={this.handleSwitchView} >
-                        </button>
-                    </div>
+                <div className="input-group add-on" style={styles.inputContainer}>
                     <input
                         id='search-input'
                         className='form-control'
@@ -128,14 +123,17 @@ export default class SearchForm extends React.Component {
                         </button>
                     </div>
                 </div>
-                <h3>{message}</h3>
-                { this.displayResults() }
+                { this.getMessage() }
+                { this.getResults() }
             </div>
         )
     }
 }
 
 const styles = {
+    inputContainer: {
+        marginBottom: '20px',
+    },
     searchContainer: {
         display: 'inline-block',
         minWidth: '200px',
