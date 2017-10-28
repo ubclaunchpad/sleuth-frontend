@@ -1,5 +1,6 @@
 import React from 'react';
 import SearchForm from './SearchForm';
+import Navbar from './Navbar';
 
 export default class App extends React.Component {
 	constructor(props) {
@@ -8,8 +9,11 @@ export default class App extends React.Component {
 
 	render() {
 		return (
-			<div className='container-fluid' style={styles.rootDiv}>
-				<SearchForm client={this.props.client} />
+			<div>
+				<Navbar {...navbar} />
+				<div className='container-fluid' style={styles.rootDiv}>
+					<SearchForm client={this.props.client} />
+				</div>
 			</div>
 		);
 	}
@@ -20,3 +24,16 @@ const styles = {
 		textAlign: 'center'
 	}
 }
+
+const navbar = {
+    brand: {
+        linkTo: "#",
+        text: "Sleuth"
+    },
+    links: [
+        {
+            linkTo: "#",
+            text: "Link 1"
+        }
+    ]
+};
