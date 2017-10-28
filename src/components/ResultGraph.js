@@ -1,20 +1,19 @@
 import React from 'react';
-import {Sigma, RandomizeNodePositions, RelativeSize, ForceAtlas2} from 'react-sigma';
+import {Sigma, RandomizeNodePositions, RelativeSize} from 'react-sigma';
 import SigmaNodeContainer from './SigmaNodeContainer'
 
 export default class ResultGraph extends React.Component {
     constructor(props) {
         super(props);
-        this.getResultGraph = this.getResultGraph.bind(this);
     }
 
     /**
      * Returns graph of results
      */
-    getResultGraph() {
+    getResultGraph(results) {
         let nodes = [];
         let edges = [];
-        this.props.results.map((result) => {
+        results.forEach((result) => {
             nodes.push({
                 id:String(result.url),
                 label:String(result.pageName)
@@ -30,16 +29,18 @@ export default class ResultGraph extends React.Component {
             };
             */
         })
-        
-        return {nodes:nodes,edges:edges};
+        return {nodes,edges};
     }
 
     render() {
-        const resultGraph = JSON.parse(JSON.stringify(this.getResultGraph()));
+        //const resultGraph = this.getResultGraph();
+        console.log(this.props.results);
+        const graph = this.getResultGraph(this.props.results);
+        console.log(graph);
         /*
         return (
             <div>
-                <Sigma graph={resultGraph}
+                <Sigma graph={graph}
                         settings={{drawEdges: true}}
                         onOverNode={e => this._onMouseOverNode()}
                         onClickNode={e => this._onNodeClick()}
@@ -47,26 +48,20 @@ export default class ResultGraph extends React.Component {
                     <RelativeSize initialSize={15}/>
                     <RandomizeNodePositions/>
                 </Sigma>
-                <p>{String(resultGraph.nodes)}</p>
             </div>
         )
         */
+        
         return (
             <div>
                 <Sigma settings={{drawEdges: true}}
                         onOverNode={e => this._onMouseOverNode()}
                         onClickNode={e => this._onNodeClick()}
                         onClickStage={ e => this._onStageClick()}>
-                    {
-                        resultGraph.nodes.map((node) =>
-                            <SigmaNodeContainer node={node}>
-                                <ForceAtlas2 iterationsPerRender={1} timeout={600}/>
-                                <RandomizeNodePositions />
-                            </SigmaNodeContainer>
-                        )
-                    }
+                    <SigmaNodeContainer graph={graph}>
+                        <RandomizeNodePositions />
+                    </SigmaNodeContainer>
                 </Sigma>
-                <p>{String(resultGraph.nodes)}</p>
             </div>  
         )
         
