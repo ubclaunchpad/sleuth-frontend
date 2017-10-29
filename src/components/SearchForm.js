@@ -93,9 +93,9 @@ export default class SearchForm extends React.Component {
 
     displayResults() {
         if (this.state.viewType == 'list') 
-            return <ResultList results={this.state.results} />;
+            return <ResultList key="resultList" results={this.state.results} />;
         else 
-            return <ResultGraph results={this.state.results} />;
+            return <ResultGraph key="resultGraph" results={this.state.results} />;
     }
 
     render() {
