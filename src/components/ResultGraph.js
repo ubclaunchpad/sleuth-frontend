@@ -6,12 +6,14 @@ export default class ResultGraph extends React.Component {
         super(props);
         this.getResultGraph=this.getResultGraph.bind(this);
         this.state={
-            showResult:"show"
+            showResult:false
         }
     }
 
     /**
-     * Returns graph of results
+     * Returns results as a graph object
+     * with list of nodes and objects
+     * @param {list} results
      */
     getResultGraph(results) {
         let nodes = [];
@@ -36,15 +38,15 @@ export default class ResultGraph extends React.Component {
         return {nodes,edges};
     }
 
+    /**
+     * Determines when Sigma graph needs to be updated
+     * and sets state accordingly to remount the component
+     */
     componentWillReceiveProps(nextProps) {
-        console.log("Next: " + nextProps.results)
-        console.log("This: " + this.props.results)
         if (JSON.stringify(nextProps.results) !== JSON.stringify(this.props.results)) {
-            if (this.state.showResult === "show") {
-                this.setState({showResult:"hide"});
-            } else {
-                this.setState({showResult:"show"});
-            }
+            // changing the key of the component remounts it
+            let newState = !this.state.showResult;
+            this.setState({showResult:newState});
         }
         return true;
     }
@@ -54,7 +56,7 @@ export default class ResultGraph extends React.Component {
         console.log(graph);
         console.log(this.props.results);
         return (
-            <Sigma key={this.state.showResult}
+            <Sigma key={String(this.state.showResult)}
                     graph={graph}
                     settings={{drawEdges: true}}
                     onOverNode={e => this._onMouseOverNode()}
@@ -66,15 +68,24 @@ export default class ResultGraph extends React.Component {
         )
     }
 
+    /**
+     * Called when user hovers over a Sigma node
+     */
     _onNodeMouseOver(event) {
         // TODO
         let label = event.data.node.label;
     }
 
+    /**
+     * Called when user clicks a Sigma node
+     */
     _onNodeClick(event) {
         // TODO
     }
 
+    /**
+     * Called when user clicks the background of graph
+     */
     _onStageClick(event) {
         // TODO
     }
