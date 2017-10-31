@@ -1,5 +1,7 @@
 import React from 'react';
 import ResultList from './ResultList';
+import PropTypes from 'prop-types';
+import SleuthClient from '../client';
 
 export default class SearchForm extends React.Component {
     constructor(props) {
@@ -130,6 +132,10 @@ export default class SearchForm extends React.Component {
     }
 }
 
+SearchForm.propTypes = {
+    client: PropTypes.instanceOf(SleuthClient)
+}
+
 const styles = {
     inputContainer: {
         marginBottom: '20px',
@@ -143,3 +149,4 @@ const styles = {
         borderRadius: '4px'
     }
 };
+

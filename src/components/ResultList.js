@@ -1,5 +1,6 @@
 import React from 'react';
 import SearchResult from './SearchResult';
+import PropTypes from 'prop-types';
 
 export default class ResultList extends React.Component {
     constructor(props) {
@@ -30,6 +31,14 @@ export default class ResultList extends React.Component {
             <div className='container' style={styles.results}>{resultList}</div>
         )
     }
+}
+
+ResultList.propTypes = {
+    results: PropTypes.shape({
+        url: PropTypes.string,
+        description: PropTypes.string,
+        pageName: PropTypes.string
+    })
 }
 
 const styles = {

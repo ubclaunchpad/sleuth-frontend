@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 export default class SearchResult extends React.Component {
     constructor(props) {
@@ -32,6 +33,13 @@ export default class SearchResult extends React.Component {
         )
     }
 }
+
+SearchResult.propTypes = PropTypes.shape({
+    url: PropTypes.string,
+    description: PropTypes.string,
+    siteName: PropTypes.string,
+    pageName: PropTypes.string
+})
 
 const styles = {
     resultsContainer: {
