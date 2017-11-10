@@ -2,6 +2,7 @@ import React from 'react';
 import ResultList from './ResultList';
 import PropTypes from 'prop-types';
 import SleuthClient from '../client';
+import ResultGraph from './ResultGraph';
 
 export default class SearchForm extends React.Component {
     constructor(props) {
@@ -11,11 +12,14 @@ export default class SearchForm extends React.Component {
             results: [],
             noResults: false,
             errored: false,
+            queryId: 0,
         };
 
         this.handleChange = this.handleChange.bind(this);
         this.handleKeyPress = this.handleKeyPress.bind(this);
         this.handleResponse = this.handleResponse.bind(this);
+        this.handleSubmit = this.handleSubmit.bind(this);
+        this.handleError = this.handleError.bind(this);
         this.getResults = this.getResults.bind(this);
         this.getMessage = this.getMessage.bind(this);
     }
@@ -49,7 +53,10 @@ export default class SearchForm extends React.Component {
      */
     handleSubmit(event) {
         if (this.state.query.length === 0) return;
-        this.setState({ noResults: false });
+        this.setState({
+            noResults: false,
+            queryId: this.state.queryId++,
+        });
         this.props.client.search(this.state.query, 'genericPage')
             .then(this.handleResponse)
             .catch(this.handleError);
@@ -60,17 +67,22 @@ export default class SearchForm extends React.Component {
      * @param {Object} response
      */
     handleResponse(response) {
-        const docs = response.response.docs;
-        const highlights = response.highlighting;
-        let results = docs.map((doc, index) => {
+        const docs = response.data[0].response.docs;
+        const highlights = response.data[0].highlighting;
+        let results = docs.map(doc => {
             return {
                 url: doc.id,
-                description: doc.description ? doc.description[0] : highlights[doc.id].content[0],
-                pageName: doc.pageName ? doc.pageName : doc.siteName
-            }
+                description: doc.description ? doc.description : highlights[doc.id].content[0],
+                pageName: doc.pageName ? doc.pageName : doc.siteName,
+                children: doc.children,
+            };
         });
 
-        this.setState({ results: results, noResults: results.length === 0 });
+        this.setState({
+            results: results,
+            noResults: results.length === 0,
+            queryId: this.state.queryId + 1,
+        });
     }
 
     /**
@@ -87,7 +99,12 @@ export default class SearchForm extends React.Component {
      * depending on this.props.graphView.
      */
     getResults() {
-        // TODO: check this.props.graphView and use graphView if it's true
+        if (this.props.graphView) {
+            return <ResultGraph
+                results={this.state.results}
+                queryId={this.state.queryId}
+            />;
+        }
         return <ResultList results={this.state.results} />;
     }
 
@@ -97,7 +114,7 @@ export default class SearchForm extends React.Component {
      */
     getMessage() {
         if (this.state.errored) {
-            return <h4>Yikes! An error occurred while performing your search</h4>;
+            return <h4>Yikes! An error occurred while performing your search.</h4>;
         } else if (this.state.noResults) {
             return <h4>No results found :(</h4>;
         }

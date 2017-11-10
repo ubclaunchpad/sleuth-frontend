@@ -7,14 +7,13 @@ export default class App extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			graphView: true
+			graphView: false
 		}
 
 		this.toggleView = this.toggleView.bind(this);
 	}
 
 	toggleView() {
-		console.log("Toggled View");
 		this.setState({ graphView: !this.state.graphView });
 	}
 

@@ -1,5 +1,5 @@
 import React from 'react';
-import SearchResult from './SearchResult';
+import ResultItem from './ResultItem';
 import PropTypes from 'prop-types';
 
 export default class ResultList extends React.Component {
@@ -16,7 +16,7 @@ export default class ResultList extends React.Component {
     getResultList() {
         return this.props.results.map((result) =>
             <div className='row'>
-                <SearchResult
+                <ResultItem
                     url={result.url}
                     description={result.description}
                     pageName={result.pageName}
@@ -34,11 +34,11 @@ export default class ResultList extends React.Component {
 }
 
 ResultList.propTypes = {
-    results: PropTypes.shape({
+    results: PropTypes.arrayOf(PropTypes.shape({
         url: PropTypes.string,
         description: PropTypes.string,
         pageName: PropTypes.string
-    })
+    }))
 }
 
 const styles = {

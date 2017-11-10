@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-export default class SearchResult extends React.Component {
+export default class ResultItem extends React.Component {
     constructor(props) {
         super(props);
     }
@@ -34,7 +34,7 @@ export default class SearchResult extends React.Component {
     }
 }
 
-SearchResult.propTypes = PropTypes.shape({
+ResultItem.propTypes = PropTypes.shape({
     url: PropTypes.string,
     description: PropTypes.string,
     siteName: PropTypes.string,
