@@ -48,7 +48,7 @@ export default class SearchForm extends React.Component {
     handleSubmit(event) {
         if (this.state.query.length === 0) return;
         this.setState({ noResults: false });
-        this.props.client.search(this.state.query, 'genericPage')
+        this.props.client.search(this.state.query)
             .then(this.handleResponse)
             .catch(this.handleError);
     }
@@ -58,13 +58,18 @@ export default class SearchForm extends React.Component {
      * @param {Object} response
      */
     handleResponse(response) {
-        const docs = response.response.docs;
-        const highlights = response.highlighting;
+        // TODO: handle CourseItem
+        const docs = response.data[1].response.docs;
+        const highlights = response.data[1].highlighting;
         let results = docs.map((doc, index) => {
+            console.log(doc.description != '' ? doc.description : highlights[doc.id].content[0])
+            console.log(doc.name)
+            console.log(doc.siteName != '' ? doc.siteName : '')
             return {
                 url: doc.id,
-                description: doc.description ? doc.description[0] : highlights[doc.id].content[0],
-                pageName: doc.pageName ? doc.pageName : doc.siteName
+                description: doc.description != '' ? doc.description : highlights[doc.id].content[0],
+                pageName: doc.name,
+                siteName: doc.siteName != '' ? doc.siteName : ''
             }
         });
 
