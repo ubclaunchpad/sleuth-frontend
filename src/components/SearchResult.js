@@ -24,11 +24,12 @@ export default class SearchResult extends React.Component {
         const description = this.highlight(this.props.description);
         const url = this.props.pageName ? this.props.pageName : this.props.url;
         return (
-            <div className='container' style={styles.resultsContainer}>
-                <a href={this.props.url}>{url}</a>
-                {this.props.siteName ? <p>{this.props.siteName}</p> : null}
-                {description}
-            </div>
+            <p className='container' style={styles.resultsContainer}>
+                <a href={this.props.url} style={styles.urlTitle}>{url}</a>
+                <br />
+                {this.props.siteName ? <text style={styles.siteTitle}>{this.props.siteName}</text> : null}
+                <text style={styles.descriptionStyle}>{description}</text>
+            </p>
         )
     }
 }
@@ -37,6 +38,18 @@ const styles = {
     resultsContainer: {
         textAlign: 'left',
         margin: 'auto',
-        width: '100%'
+        width: '100%',
+    },
+    urlTitle: {
+        color: 'navy',
+        fontWeight: 'bold',
+        fontSize: '125%',
+    },
+    siteTitle: {
+        color: 'grey',
+        fontWeight: 'bold',
+    },
+    descriptionStyle: {
+        fontSize: '90%',
     }
 }
