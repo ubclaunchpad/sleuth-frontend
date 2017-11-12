@@ -46,7 +46,7 @@ export default class SleuthClient {
     async search(query) {
         return await this._get('/search', {
             q: query,
-            return: 'siteName,children'
+            return: 'siteName,links'
         });
     }
 }
