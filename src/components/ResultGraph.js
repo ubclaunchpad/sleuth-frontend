@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import ResultNode from './ResultNode';
 import {
     scaleOrdinal,
     schemeCategory20
