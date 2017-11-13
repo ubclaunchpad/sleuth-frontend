@@ -14,6 +14,7 @@ export default class SearchForm extends React.Component {
         this.handleChange = this.handleChange.bind(this);
         this.handleKeyPress = this.handleKeyPress.bind(this);
         this.handleResponse = this.handleResponse.bind(this);
+        this.handleError = this.handleError.bind(this);
         this.getResults = this.getResults.bind(this);
         this.getMessage = this.getMessage.bind(this);
     }
@@ -58,21 +59,35 @@ export default class SearchForm extends React.Component {
      * @param {Object} response
      */
     handleResponse(response) {
-        // TODO: handle CourseItem
-        const docs = response.data[1].response.docs;
-        const highlights = response.data[1].highlighting;
-        let results = docs.map((doc, index) => {
-            console.log(doc.description != '' ? doc.description : highlights[doc.id].content[0])
-            console.log(doc.name)
-            console.log(doc.siteName != '' ? doc.siteName : '')
-            return {
-                url: doc.id,
-                description: doc.description != '' ? doc.description : highlights[doc.id].content[0],
-                pageName: doc.name,
-                siteName: doc.siteName != '' ? doc.siteName : ''
-            }
-        });
+        let results = [];
+        for (var i = 0; i < response.data.length; i++) {
+            const dataset = response.data[i];
+            const docs = dataset.response.docs;
+            const highlights = dataset.highlighting;
+            switch (dataset.type) {
+                case "genericPage":
+                    results = results.concat(docs.map(doc => {
+                        return {
+                            url: doc.id,
+                            description: doc.description != '' ? doc.description : highlights[doc.id].content[0],
+                            pageName: doc.name,
+                            siteName: doc.siteName != '' ? doc.siteName : ''
+                        }
+                    }));
+                    break;
 
+                case "courseItem":
+                    results = results.concat(docs.map(doc => {
+                        return {
+                            url: doc.id,
+                            description: doc.description,
+                            pageName: doc.name,
+                            siteName: doc.subjectData.length == 2 ? doc.subjectData[1] : ''
+                        }
+                    }))
+                    break;
+            }
+        }
         this.setState({ results: results, noResults: results.length === 0 });
     }
 

@@ -24,12 +24,12 @@ export default class SearchResult extends React.Component {
         const description = this.highlight(this.props.description);
         const url = this.props.pageName ? this.props.pageName : this.props.url;
         return (
-            <p className='container' style={styles.resultsContainer}>
+            <div className='container' style={styles.resultsContainer}>
                 <a href={this.props.url} style={styles.urlTitle}>{url}</a>
                 <br />
-                {this.props.siteName ? <text style={styles.siteTitle}>{this.props.siteName}</text> : null}
-                <text style={styles.descriptionStyle}>{description}</text>
-            </p>
+                {this.props.siteName ? <p style={styles.siteTitle}>{this.props.siteName}</p> : null}
+                <p style={styles.descriptionStyle}>{description}</p>
+            </div>
         )
     }
 }

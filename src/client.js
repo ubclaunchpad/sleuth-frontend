@@ -6,6 +6,15 @@ export default class SleuthClient {
     }
 
     /**
+     * Returns a Response object in JSON format.
+     * @param {Response} response The response to our request that the `fetch`
+     * API returns.
+     */
+    static _json(response) {
+        return response.json();
+    }
+
+    /**
      * Returns a string representation of the given parameters to be used in a
      * HTTP request.
      * @param {Object} params A JSON object of key value pairs representing the
@@ -27,26 +36,26 @@ export default class SleuthClient {
      * @param {Object} params
      */
     async _get(endpoint, params) {
-        const uri = this.url + endpoint + SleuthClient._stringParams(params);
-        return new Promise(function(resolve, reject) {
-            fetch(uri).then(response => response.json())
-            .then(response => resolve(response))
-            .catch(error => {
-                console.trace(error)
-                reject(error)
-            });
-        })
+        try {
+            const uri = this.url + endpoint + SleuthClient._stringParams(params);
+            const response = await fetch(uri);
+            return await SleuthClient._json(response);
+        } catch (ex) {
+            throw ex;
+        }
     }
 
     /**
      * Makes a search API call to the given core with the given query and returns
      * the response in JSON format, or throws an error.
      * @param {String} query
+     * @param {String} core
      */
-    async search(query) {
+    async search(query, core) {
         return await this._get('/search', {
             q: query,
-            return: 'siteName,links'
+            core: core,
+            return: 'siteName,children,subjectData',
         });
     }
 }
