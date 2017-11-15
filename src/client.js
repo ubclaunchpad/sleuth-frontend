@@ -54,7 +54,8 @@ export default class SleuthClient {
     async search(query, core) {
         return await this._get('/search', {
             q: query,
-            core: core
+            core: core,
+            return: 'siteName,children,subjectData',
         });
     }
 }

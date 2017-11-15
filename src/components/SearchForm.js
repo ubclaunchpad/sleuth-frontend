@@ -14,6 +14,7 @@ export default class SearchForm extends React.Component {
         this.handleChange = this.handleChange.bind(this);
         this.handleKeyPress = this.handleKeyPress.bind(this);
         this.handleResponse = this.handleResponse.bind(this);
+        this.handleError = this.handleError.bind(this);
         this.getResults = this.getResults.bind(this);
         this.getMessage = this.getMessage.bind(this);
     }
@@ -48,7 +49,7 @@ export default class SearchForm extends React.Component {
     handleSubmit(event) {
         if (this.state.query.length === 0) return;
         this.setState({ noResults: false });
-        this.props.client.search(this.state.query, 'genericPage')
+        this.props.client.search(this.state.query)
             .then(this.handleResponse)
             .catch(this.handleError);
     }
@@ -58,16 +59,35 @@ export default class SearchForm extends React.Component {
      * @param {Object} response
      */
     handleResponse(response) {
-        const docs = response.response.docs;
-        const highlights = response.highlighting;
-        let results = docs.map((doc, index) => {
-            return {
-                url: doc.id,
-                description: doc.description ? doc.description[0] : highlights[doc.id].content[0],
-                pageName: doc.pageName ? doc.pageName : doc.siteName
-            }
-        });
+        let results = [];
+        for (var i = 0; i < response.data.length; i++) {
+            const dataset = response.data[i];
+            const docs = dataset.response.docs;
+            const highlights = dataset.highlighting;
+            switch (dataset.type) {
+                case "genericPage":
+                    results = results.concat(docs.map(doc => {
+                        return {
+                            url: doc.id,
+                            description: doc.description != '' ? doc.description : highlights[doc.id].content[0],
+                            pageName: doc.name,
+                            siteName: doc.siteName != '' ? doc.siteName : ''
+                        }
+                    }));
+                    break;
 
+                case "courseItem":
+                    results = results.concat(docs.map(doc => {
+                        return {
+                            url: doc.id,
+                            description: doc.description,
+                            pageName: doc.name,
+                            siteName: doc.subjectData.length == 2 ? doc.subjectData[1] : ''
+                        }
+                    }))
+                    break;
+            }
+        }
         this.setState({ results: results, noResults: results.length === 0 });
     }
 
