@@ -118,7 +118,7 @@ export default class ResultGraph extends React.Component {
         // Create an Edge for each reference from one page to another in our
         // array of results.
         results.forEach(parent => {
-            parent.children.forEach(childUrl => {
+            (parent.children || []).forEach(childUrl => {
                 // Check that there is a node in our results with the childUrl
                 // and that there exists a connection parent -> child or
                 // child -> parent.

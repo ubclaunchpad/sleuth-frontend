@@ -49,13 +49,17 @@ export default class SleuthClient {
      * Makes a search API call to the given core with the given query and returns
      * the response in JSON format, or throws an error.
      * @param {String} query
-     * @param {String} core
+     * @param {String} type May be undefined, in which case we search all cores.
      */
-    async search(query, core) {
-        return await this._get('/search', {
+    async search(query, type) {
+        const params = {
             q: query,
-            core: core,
-            return: 'siteName,children',
-        });
+            return: 'siteName,children,subjectData',
+        };
+
+        if (type) {
+            params.type = type;
+        }
+        return await this._get('/search', params);
     }
 }

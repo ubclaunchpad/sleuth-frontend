@@ -20,6 +20,7 @@ export default class ResultList extends React.Component {
                     url={result.url}
                     description={result.description}
                     pageName={result.pageName}
+                    siteName={result.siteName}
                 />
             </div>
         );

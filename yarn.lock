@@ -3123,10 +3123,6 @@ react-dom@^15.6.1:
     object-assign "^4.1.0"
     prop-types "^15.5.10"
 
-react-sigma@^1.2.28:
-  version "1.2.28"
-  resolved "https://registry.yarnpkg.com/react-sigma/-/react-sigma-1.2.28.tgz#9c01a929e964a3e9f9aec08ab758d1c69dead2e2"
-
 react@^15.6.1:
   version "15.6.1"
   resolved "https://registry.yarnpkg.com/react/-/react-15.6.1.tgz#baa8434ec6780bde997cdc380b79cd33b96393df"
