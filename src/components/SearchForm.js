@@ -3,6 +3,7 @@ import ResultList from './ResultList';
 import PropTypes from 'prop-types';
 import SleuthClient from '../client';
 import ResultGraph from './ResultGraph';
+import { GenericPageResult, CourseItemResult } from './ResultTypes';
 
 export default class SearchForm extends React.Component {
     constructor(props) {
@@ -55,7 +56,7 @@ export default class SearchForm extends React.Component {
         if (this.state.query.length === 0) return;
         this.setState({
             noResults: false,
-            queryId: this.state.queryId++,
+            queryId: this.state.queryId + 1,
         });
         this.props.client.search(this.state.query)
             .then(this.handleResponse)
@@ -80,23 +81,24 @@ export default class SearchForm extends React.Component {
             switch (dataset.type) {
                 case 'genericPage':
                     results = results.concat(docs.map(doc => {
-                        return {
-                            url: doc.id,
-                            description: doc.description != '' ? doc.description : highlights[doc.id].content[0],
-                            pageName: doc.name,
-                            siteName: doc.siteName != '' ? doc.siteName : ''
-                        }
+                        return new GenericPageResult(
+                            doc.id,
+                            doc.description != '' ? doc.description : highlights[doc.id].content[0],
+                            doc.name,
+                            doc.siteName != '' ? doc.siteName : '',
+                            doc.links
+                        );
                     }));
                     break;
 
                 case 'courseItem':
                     results = results.concat(docs.map(doc => {
-                        return {
-                            url: doc.id,
-                            description: doc.description,
-                            pageName: doc.name,
-                            siteName: doc.subjectData.length == 2 ? doc.subjectData[1] : ''
-                        }
+                        return new CourseItemResult(
+                            doc.id,
+                            doc.description,
+                            doc.name,
+                            doc.subjectData.length == 2 ? doc.subjectData[1] : ''
+                        );
                     }))
                     break;
             }
@@ -129,7 +131,10 @@ export default class SearchForm extends React.Component {
                 queryId={this.state.queryId}
             />;
         }
-        return <ResultList results={this.state.results} />;
+        return <ResultList
+            results={this.state.results}
+            queryId={this.state.queryId}
+        />;
     }
 
     /**

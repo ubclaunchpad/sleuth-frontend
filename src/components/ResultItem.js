@@ -14,22 +14,21 @@ export default class ResultItem extends React.Component {
     highlight(text) {
         let chunks = this.props.description.split(/<em>(.*?)<\/em>/g);
         chunks = chunks.map((text, index) => {
-            return index % 2 == 1 ? (<b>{text}</b>) : text;
+            return index % 2 == 1 ? (<b key={text + index}>{text}</b>) : text;
         });
         return (
-            <p>{chunks}</p>
+            <p style={styles.descriptionStyle}>{chunks}</p>
         )
     }
 
     render() {
-        const description = this.highlight(this.props.description);
-        const url = this.props.pageName ? this.props.pageName : this.props.url;
+        const title = this.props.pageName ? this.props.pageName : this.props.url;
         return (
-            <div className='container' style={styles.resultsContainer}>
-                <a href={this.props.url} style={styles.urlTitle}>{url}</a>
+            <div className='container' style={styles.resultsContainer} key={this.props.url}>
+                <a href={this.props.url} style={styles.urlTitle}>{title}</a>
                 <br />
                 {this.props.siteName ? <p style={styles.siteTitle}>{this.props.siteName}</p> : null}
-                <p style={styles.descriptionStyle}>{description}</p>
+                {this.highlight(this.props.description)}
             </div>
         )
     }
@@ -40,7 +39,7 @@ ResultItem.propTypes = PropTypes.shape({
     description: PropTypes.string,
     siteName: PropTypes.string,
     pageName: PropTypes.string
-})
+});
 
 const styles = {
     resultsContainer: {
@@ -60,4 +59,4 @@ const styles = {
     descriptionStyle: {
         fontSize: '90%',
     }
-}
+};

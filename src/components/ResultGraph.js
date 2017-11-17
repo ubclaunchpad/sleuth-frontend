@@ -1,16 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {
-    scaleOrdinal,
-    schemeCategory20
-} from 'd3-scale';
-import {
-    drag
-} from 'd3-drag';
-import {
-    select,
-    event
-} from 'd3-selection';
+import { CourseItemResult, GenericPageResult } from './ResultTypes';
+import { scaleOrdinal, schemeCategory20 } from 'd3-scale';
+import { drag } from 'd3-drag';
+import { select, event } from 'd3-selection';
 import {
     forceCenter,
     forceSimulation,
@@ -118,7 +111,7 @@ export default class ResultGraph extends React.Component {
         // Create an Edge for each reference from one page to another in our
         // array of results.
         results.forEach(parent => {
-            (parent.children || []).forEach(childUrl => {
+            (parent.links || []).forEach(childUrl => {
                 // Check that there is a node in our results with the childUrl
                 // and that there exists a connection parent -> child or
                 // child -> parent.
@@ -202,19 +195,20 @@ export default class ResultGraph extends React.Component {
                 id='result-graph'
                 style={{ width: '100%', height: '500px' }}
                 ref={(mount) => { this.mount = mount }}
-            />
+            >
+            </div>
         )
     }
 }
 
 ResultGraph.propTypes = {
     queryId: PropTypes.number,
-    results: PropTypes.arrayOf(PropTypes.shape({
-        url: PropTypes.string,
-        description: PropTypes.string,
-        pageName: PropTypes.string,
-        children: PropTypes.arrayOf(PropTypes.string)
-    }))
+    results: PropTypes.arrayOf(
+        PropTypes.oneOfType([
+            PropTypes.instanceOf(CourseItemResult),
+            PropTypes.instanceOf(GenericPageResult)
+        ])
+    )
 };
 
 /**

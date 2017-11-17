@@ -54,7 +54,7 @@ export default class SleuthClient {
     async search(query, type) {
         const params = {
             q: query,
-            return: 'siteName,children,subjectData',
+            return: 'siteName,links,subjectData',
         };
 
         if (type) {
