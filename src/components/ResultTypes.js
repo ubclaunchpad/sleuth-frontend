@@ -9,7 +9,7 @@ export class CourseItemResult {
     constructor(id, description, pageName, siteName) {
         this.url = id;
         this.description = description;
-        this.pageName = name;
+        this.pageName = pageName;
         this.siteName = siteName;
     }
 }
