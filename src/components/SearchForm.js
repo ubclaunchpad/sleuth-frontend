@@ -1,5 +1,9 @@
 import React from 'react';
 import ResultList from './ResultList';
+import PropTypes from 'prop-types';
+import SleuthClient from '../client';
+import ResultGraph from './ResultGraph';
+import { GenericPageResult, CourseItemResult } from './ResultTypes';
 
 export default class SearchForm extends React.Component {
     constructor(props) {
@@ -9,11 +13,13 @@ export default class SearchForm extends React.Component {
             results: [],
             noResults: false,
             errored: false,
+            queryId: 0,
         };
 
         this.handleChange = this.handleChange.bind(this);
         this.handleKeyPress = this.handleKeyPress.bind(this);
         this.handleResponse = this.handleResponse.bind(this);
+        this.handleSubmit = this.handleSubmit.bind(this);
         this.handleError = this.handleError.bind(this);
         this.getResults = this.getResults.bind(this);
         this.getMessage = this.getMessage.bind(this);
@@ -48,7 +54,10 @@ export default class SearchForm extends React.Component {
      */
     handleSubmit(event) {
         if (this.state.query.length === 0) return;
-        this.setState({ noResults: false });
+        this.setState({
+            noResults: false,
+            queryId: this.state.queryId + 1,
+        });
         this.props.client.search(this.state.query)
             .then(this.handleResponse)
             .catch(this.handleError);
@@ -59,36 +68,47 @@ export default class SearchForm extends React.Component {
      * @param {Object} response
      */
     handleResponse(response) {
+        if (response.errorType) {
+            this.handleError(response.errorType + ': ' + response.message);
+            return;
+        }
+
         let results = [];
-        for (var i = 0; i < response.data.length; i++) {
-            const dataset = response.data[i];
+
+        response.data.forEach(dataset => {
             const docs = dataset.response.docs;
             const highlights = dataset.highlighting;
             switch (dataset.type) {
-                case "genericPage":
+                case 'genericPage':
                     results = results.concat(docs.map(doc => {
-                        return {
-                            url: doc.id,
-                            description: doc.description != '' ? doc.description : highlights[doc.id].content[0],
-                            pageName: doc.name,
-                            siteName: doc.siteName != '' ? doc.siteName : ''
-                        }
+                        return new GenericPageResult(
+                            doc.id,
+                            doc.description != '' ? doc.description : highlights[doc.id].content[0],
+                            doc.name,
+                            doc.siteName != '' ? doc.siteName : '',
+                            doc.links
+                        );
                     }));
                     break;
 
-                case "courseItem":
+                case 'courseItem':
                     results = results.concat(docs.map(doc => {
-                        return {
-                            url: doc.id,
-                            description: doc.description,
-                            pageName: doc.name,
-                            siteName: doc.subjectData.length == 2 ? doc.subjectData[1] : ''
-                        }
+                        return new CourseItemResult(
+                            doc.id,
+                            doc.description,
+                            doc.name,
+                            doc.subjectData.length == 2 ? doc.subjectData[1] : ''
+                        );
                     }))
                     break;
             }
-        }
-        this.setState({ results: results, noResults: results.length === 0 });
+        });
+
+        this.setState({
+            results: results,
+            noResults: results.length === 0,
+            queryId: this.state.queryId + 1,
+        });
     }
 
     /**
@@ -105,8 +125,16 @@ export default class SearchForm extends React.Component {
      * depending on this.props.graphView.
      */
     getResults() {
-        // TODO: check this.props.graphView and use graphView if it's true
-        return <ResultList results={this.state.results} />;
+        if (this.props.graphView) {
+            return <ResultGraph
+                results={this.state.results}
+                queryId={this.state.queryId}
+            />;
+        }
+        return <ResultList
+            results={this.state.results}
+            queryId={this.state.queryId}
+        />;
     }
 
     /**
@@ -115,7 +143,7 @@ export default class SearchForm extends React.Component {
      */
     getMessage() {
         if (this.state.errored) {
-            return <h4>Yikes! An error occurred while performing your search</h4>;
+            return <h4>Yikes! An error occurred while performing your search.</h4>;
         } else if (this.state.noResults) {
             return <h4>No results found :(</h4>;
         }
@@ -124,7 +152,7 @@ export default class SearchForm extends React.Component {
     render() {
         return (
             <div className='input-group' style={styles.searchContainer}>
-                <div className="input-group add-on" style={styles.inputContainer}>
+                <div className='input-group add-on' style={styles.inputContainer}>
                     <input
                         id='search-input'
                         className='form-control'
@@ -134,12 +162,12 @@ export default class SearchForm extends React.Component {
                         onKeyPress={this.handleKeyPress}
                         placeholder='Feeling... curious?'
                     />
-                    <div className="input-group-btn">
+                    <div className='input-group-btn'>
                         <button
                             className='btn btn-primary'
                             type='button'
                             onClick={this.handleSubmit} >
-                            <i className="glyphicon glyphicon-search"></i>
+                            <i className='glyphicon glyphicon-search'></i>
                         </button>
                     </div>
                 </div>
@@ -148,6 +176,10 @@ export default class SearchForm extends React.Component {
             </div>
         )
     }
+}
+
+SearchForm.propTypes = {
+    client: PropTypes.instanceOf(SleuthClient)
 }
 
 const styles = {
@@ -163,3 +195,4 @@ const styles = {
         borderRadius: '4px'
     }
 };
+

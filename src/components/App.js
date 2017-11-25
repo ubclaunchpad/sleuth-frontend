@@ -1,18 +1,19 @@
 import React from 'react';
 import SearchForm from './SearchForm';
+import PropTypes from 'prop-types';
+import SleuthClient from '../client';
 
 export default class App extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			graphView: true
+			graphView: false
 		}
 
 		this.toggleView = this.toggleView.bind(this);
 	}
 
 	toggleView() {
-		console.log("Toggled View");
 		this.setState({ graphView: !this.state.graphView });
 	}
 
@@ -39,6 +40,10 @@ export default class App extends React.Component {
 			</div>
 		);
 	}
+}
+
+App.propTypes = {
+	client: PropTypes.instanceOf(SleuthClient)
 }
 
 const styles = {
