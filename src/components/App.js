@@ -20,14 +20,14 @@ export default class App extends React.Component {
 	render() {
 		return (
 			<div>
-				<nav className="navbar navbar-default">
-					<div className="container-fluid">
-						<div className="navbar-header">
-							<a className="navbar-brand">Sleuth</a>
+				<nav className='navbar navbar-default'>
+					<div className='container-fluid'>
+						<div className='navbar-header'>
+							<a className='navbar-brand'>Sleuth</a>
 						</div>
-						<div className="collapse navbar-collapse" id="navbar-collapse">
-							<ul className="nav navbar-nav">
-								<li onClick={this.toggleView}>
+						<div className='collapse navbar-collapse' id='navbar-collapse'>
+							<ul className='nav navbar-nav'>
+								<li onClick={this.toggleView} id='toggle-view'>
 									<a>Toggle View</a>
 								</li>
 							</ul>

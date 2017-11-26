@@ -5,3 +5,9 @@ A React frontend for our search Engine, [Sleuth](https://github.com/ubclaunchpad
 ## Useful links
 
 [React](https://facebook.github.io/react/docs/hello-world.html)
+
+## Running Tests
+
+```shell
+yarn jest --coverage
+```

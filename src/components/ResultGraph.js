@@ -215,7 +215,7 @@ ResultGraph.propTypes = {
  * Node holds data for a search result and is visually represented by a cirle in
  * the graph.
  */
-class Node {
+export class Node {
     /**
      * @constructor
      * @param {Object} result A search result with a String url property.
@@ -230,7 +230,7 @@ class Node {
  * Edge holds data for a link between two search results and is represented by
  * a line between two circles in the graph.
  */
-class Edge {
+export class Edge {
     /**
      * @constructor
      * @param {String} source The url of the parent page
