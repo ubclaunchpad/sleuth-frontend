@@ -30,19 +30,18 @@ export default class ResultList extends React.Component {
     render() {
         const resultList = this.getResultList();
         return (
-            <div
-                className='container'
-                style={styles.results}>{resultList}
+            <div className='container' style={styles.results}>
+                {resultList}
             </div>
         )
     }
 }
 
 ResultList.propTypes = {
-    results: PropTypes.arrayOf([
-        PropTypes.instanceOf(CourseItemResult),
-        PropTypes.instanceOf(GenericPageResult)
-    ]),
+    results: PropTypes.arrayOf(PropTypes.oneOfType([
+        CourseItemResult,
+        GenericPageResult
+    ])),
     queryId: PropTypes.number,
 };
 

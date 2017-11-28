@@ -1,17 +1,9 @@
 import React from 'react';
+import "whatwg-fetch"
 
 export default class SleuthClient {
     constructor(url) {
         this.url = url;
-    }
-
-    /**
-     * Returns a Response object in JSON format.
-     * @param {Response} response The response to our request that the `fetch`
-     * API returns.
-     */
-    static _json(response) {
-        return response.json();
     }
 
     /**
@@ -39,7 +31,7 @@ export default class SleuthClient {
         try {
             const uri = this.url + endpoint + SleuthClient._stringParams(params);
             const response = await fetch(uri);
-            return await SleuthClient._json(response);
+            return await response.json();
         } catch (ex) {
             throw ex;
         }
@@ -54,6 +46,7 @@ export default class SleuthClient {
     async search(query, type) {
         const params = {
             q: query,
+            rows: 100,
             return: 'siteName,links,subjectData',
         };
 

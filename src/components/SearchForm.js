@@ -50,9 +50,8 @@ export default class SearchForm extends React.Component {
      * Called when the user clicks the submit button. Makes a search call to the
      * Sleuth API and updates the component state to reflect the results in the
      * response.
-     * @param {Event} event
      */
-    handleSubmit(event) {
+    handleSubmit() {
         if (this.state.query.length === 0) return;
         this.setState({
             noResults: false,
@@ -107,7 +106,6 @@ export default class SearchForm extends React.Component {
         this.setState({
             results: results,
             noResults: results.length === 0,
-            queryId: this.state.queryId + 1,
         });
     }
 
